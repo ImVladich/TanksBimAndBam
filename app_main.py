@@ -46,14 +46,14 @@ imgBangs = [
     pygame.transform.scale(pygame.image.load('images/explosion5.png'), (32, 32))
 ]
 imgBulletRed = [
-    pygame.transform.scale(pygame.image.load('images/bulletRed1_outline.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('images/bulletRed2_outline.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('images/bulletRed3_outline.png'), (32, 32))
+    pygame.transform.scale(pygame.image.load('images/bulletRed1_outline.png'), (7, 12)),
+    pygame.transform.scale(pygame.image.load('images/bulletRed2_outline.png'), (7, 15)),
+    pygame.transform.scale(pygame.image.load('images/bulletRed3_outline.png'), (11.5, 15))
 ]
 imgBulletBlue = [
-    pygame.transform.scale(pygame.image.load('images/bulletBlue1_outline.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('images/bulletBlue2_outline.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('images/bulletBlue3_outline.png'), (32, 32))
+    pygame.transform.scale(pygame.image.load('images/bulletBlue1_outline.png'), (7, 12)),
+    pygame.transform.scale(pygame.image.load('images/bulletBlue2_outline.png'), (7, 15)),
+    pygame.transform.scale(pygame.image.load('images/bulletBlue3_outline.png'), (11.5, 15))
 ]
 imgBonuses = [
     pygame.transform.scale(pygame.image.load('images/crateWood.png'), (32, 32))
@@ -203,7 +203,7 @@ class UI:
 
 class Tank:
     MOVE_SPEED = [1.5, 2, 3]
-    BULLET_SPEED = [4, 5, 6]
+    BULLET_SPEED = [4, 5, 4]
     BULLET_DAMAGE = [1, 1, 2]
     SHOT_DELAY = [50, 40, 30]
 
