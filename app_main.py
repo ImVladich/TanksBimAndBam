@@ -14,7 +14,7 @@ clock = pygame.time.Clock()
 
 fontUI = pygame.font.Font(None, 30)
 
-imgBrick = pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\sandbagBrown.png')
+imgBrick = pygame.image.load('images\\sandbagBrown.png')
 imgTanksRed = [
     pygame.transform.scale(pygame.image.load('images\\red_tank_1_lvl.png'), (32, 32)),
     pygame.transform.scale(pygame.image.load('images\\red_tank_2_lvl.png'), (32, 32)),
@@ -41,8 +41,8 @@ imgBulletBlue = [
     pygame.image.load('images/bulletBlue3_outline.png'),
 ]
 imgBonuses = [
-    pygame.image.load('images/bonus_star.png'),
-    pygame.image.load('images/bonus_tank.png'),
+    pygame.image.load('images/crateWood.png'),
+    pygame.image.load('images/crateWood_side.png'),
 ]
 
 DIRECTS = [[0, -1], [1, 0], [0, 1], [-1, 0]]
