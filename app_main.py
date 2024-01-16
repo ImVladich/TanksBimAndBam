@@ -73,7 +73,7 @@ def start_screen():
                   ""
                   "               BATTLE TANKS"]
 
-    fon = pygame.image.load('images/background.png')
+    fon = pygame.image.load('images/start_background.png')
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 70)
     text_coord = 50
@@ -126,7 +126,7 @@ def dead_screen(player_name):
                   ""
                   "               GAME OVER"]
 
-    fon = pygame.image.load('images/background.png')
+    fon = pygame.image.load('images/finish_background.png')
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 70)
     text_coord = 50
