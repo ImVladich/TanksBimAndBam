@@ -9,25 +9,28 @@ WIDTH, HEIGHT = 800, 600
 FPS = 60
 TILE = 32
 
-
-
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 fontUI = pygame.font.Font(None, 30)
 
-imgBrick = pygame.image.load('images/block_brick.png')
-imgTanks = [
-    pygame.image.load('images/tank1.png'),
-    pygame.image.load('images/tank2.png'),
-    pygame.image.load('images/tank3.png'),
-    pygame.image.load('images/tank4.png'),
-    pygame.image.load('images/tank5.png'),
-    pygame.image.load('images/tank6.png'),
-    pygame.image.load('images/tank7.png'),
-    pygame.image.load('images/tank8.png'),
+imgBrick = pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\sandbagBrown.png')
+imgTanksRed = [
+    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_1_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_2_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_3_lvl.png'), (16, 16)),
 ]
-imgBangs = [
+imgTanksBlue = [
+    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_1_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_2_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_3_lvl.png'), (32, 32))
+]
+imgBangsRed = [
+    pygame.image.load('images/bang1.png'),
+    pygame.image.load('images/bang2.png'),
+    pygame.image.load('images/bang3.png'),
+]
+imgBangsBlue = [
     pygame.image.load('images/bang1.png'),
     pygame.image.load('images/bang2.png'),
     pygame.image.load('images/bang3.png'),
@@ -207,11 +210,18 @@ class Tank:
         self.keySHOT = keyList[4]
 
         self.rank = 0
-        self.image = pygame.transform.rotate(imgTanks[self.rank], -self.direct * 90)
+        if self.color == 'red':
+            self.image = pygame.transform.rotate(imgTanksRed[self.rank], -self.direct * 90)
+        elif self.color == 'blue':
+            self.image = pygame.transform.rotate(imgTanksBlue[self.rank], -self.direct * 90)
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def update(self):
-        self.image = pygame.transform.rotate(imgTanks[self.rank], -self.direct * 90)
+        if self.color == 'red':
+            self.image = pygame.transform.rotate(imgTanksRed[self.rank], -self.direct * 90)
+        elif self.color == 'blue':
+            self.image = pygame.transform.rotate(imgTanksBlue[self.rank], -self.direct * 90)
+
         self.image = pygame.transform.scale(self.image, (self.image.get_width() - 5, self.image.get_height() - 5))
         self.rect = self.image.get_rect(center=self.rect.center)
 
@@ -285,12 +295,13 @@ class Bullet:
 
 
 class Bang:
-    def __init__(self, px, py):
+    def __init__(self, px, py, tank_color):
         objects.append(self)
         self.type = 'bang'
 
         self.px, self.py = px, py
         self.frame = 0
+        self.tank_color = tank_color
 
     def update(self):
         self.frame += 0.2
@@ -343,7 +354,7 @@ class Bonus:
         for obj in objects:
             if obj.type == 'tank' and self.rect.colliderect(obj.rect):
                 if self.bonusNum == 0:
-                    if obj.rank < len(imgTanks) - 1:
+                    if obj.rank < len(imgTanksRed) - 1 or len(imgTanksBlue) - 1:
                         obj.rank += 1
                         objects.remove(self)
                         break
