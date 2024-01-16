@@ -14,16 +14,16 @@ clock = pygame.time.Clock()
 
 fontUI = pygame.font.Font(None, 30)
 
-imgBrick = pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\sandbagBrown.png')
+imgBrick = pygame.image.load('images\\sandbagBrown.png')
 imgTanksRed = [
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_1_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_2_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_3_lvl.png'), (16, 16)),
+    pygame.transform.scale(pygame.image.load('images\\red_tank_1_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\red_tank_2_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\red_tank_3_lvl.png'), (16, 16)),
 ]
 imgTanksBlue = [
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_1_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_2_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_3_lvl.png'), (32, 32))
+    pygame.transform.scale(pygame.image.load('images\\blue_tank_1_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\blue_tank_2_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\blue_tank_3_lvl.png'), (32, 32))
 ]
 imgBangsRed = [
     pygame.image.load('images/bang1.png'),
@@ -36,8 +36,8 @@ imgBangsBlue = [
     pygame.image.load('images/bang3.png'),
 ]
 imgBonuses = [
-    pygame.image.load('images/bonus_star.png'),
-    pygame.image.load('images/bonus_tank.png'),
+    pygame.image.load('images/crateWood.png'),
+    pygame.image.load('images/crateWood_side.png'),
 ]
 
 DIRECTS = [[0, -1], [1, 0], [0, 1], [-1, 0]]
