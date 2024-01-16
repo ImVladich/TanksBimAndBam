@@ -16,24 +16,29 @@ fontUI = pygame.font.Font(None, 30)
 
 imgBrick = pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\sandbagBrown.png')
 imgTanksRed = [
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_1_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_2_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\red_tank_3_lvl.png'), (16, 16)),
+    pygame.transform.scale(pygame.image.load('images\\red_tank_1_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\red_tank_2_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\red_tank_3_lvl.png'), (16, 16)),
 ]
 imgTanksBlue = [
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_1_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_2_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\TanksBimAndBam\\images\\blue_tank_3_lvl.png'), (32, 32))
+    pygame.transform.scale(pygame.image.load('images\\blue_tank_1_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\blue_tank_2_lvl.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images\\blue_tank_3_lvl.png'), (32, 32))
 ]
-imgBangsRed = [
+imgBangs = [
     pygame.image.load('images/bang1.png'),
     pygame.image.load('images/bang2.png'),
     pygame.image.load('images/bang3.png'),
 ]
-imgBangsBlue = [
-    pygame.image.load('images/bang1.png'),
-    pygame.image.load('images/bang2.png'),
-    pygame.image.load('images/bang3.png'),
+imgBulletRed = [
+    pygame.image.load('images/bulletRed1_outline.png'),
+    pygame.image.load('images/bulletRed2_outline.png'),
+    pygame.image.load('images/bulletRed3_outline.png'),
+]
+imgBulletBlue = [
+    pygame.image.load('images/bulletBlue1_outline.png'),
+    pygame.image.load('images/bulletBlue2_outline.png'),
+    pygame.image.load('images/bulletBlue3_outline.png'),
 ]
 imgBonuses = [
     pygame.image.load('images/bonus_star.png'),
@@ -62,7 +67,7 @@ def start_screen():
                   ""
                   "               BATTLE TANKS"]
 
-    fon = pygame.image.load('C:\\Users\\1\\PycharmProjects\\pythonProject5\\images\\tanks-world-of-tanks-game.jpg')
+    fon = pygame.image.load('images\\tanks-world-of-tanks-game.jpg')
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 70)
     text_coord = 50
@@ -295,13 +300,12 @@ class Bullet:
 
 
 class Bang:
-    def __init__(self, px, py, tank_color):
+    def __init__(self, px, py):
         objects.append(self)
         self.type = 'bang'
 
         self.px, self.py = px, py
         self.frame = 0
-        self.tank_color = tank_color
 
     def update(self):
         self.frame += 0.2
