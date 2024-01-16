@@ -18,39 +18,48 @@ imgBrick = pygame.image.load('images\\sandbagBrown.png')
 imgTanksRed = [
     pygame.transform.scale(pygame.image.load('images\\red_tank_1_lvl.png'), (32, 32)),
     pygame.transform.scale(pygame.image.load('images\\red_tank_2_lvl.png'), (32, 32)),
-    pygame.transform.scale(pygame.image.load('images\\red_tank_3_lvl.png'), (16, 16)),
+    pygame.transform.scale(pygame.image.load('images\\red_tank_3_lvl.png'), (32, 32)),
+]
+imgTanksRed = [
+    pygame.transform.rotate(imgTanksRed[0], 180),
+    pygame.transform.rotate(imgTanksRed[1], 180),
+    pygame.transform.rotate(imgTanksRed[2], 180)
+
 ]
 imgTanksBlue = [
     pygame.transform.scale(pygame.image.load('images\\blue_tank_1_lvl.png'), (32, 32)),
     pygame.transform.scale(pygame.image.load('images\\blue_tank_2_lvl.png'), (32, 32)),
     pygame.transform.scale(pygame.image.load('images\\blue_tank_3_lvl.png'), (32, 32))
 ]
+
+imgTanksBlue = [
+    pygame.transform.rotate(imgTanksBlue[0], 180),
+    pygame.transform.rotate(imgTanksBlue[1], 180),
+    pygame.transform.rotate(imgTanksBlue[2], 180)
+
+]
 imgBangs = [
-    pygame.image.load('images/bang1.png'),
-    pygame.image.load('images/bang2.png'),
-    pygame.image.load('images/bang3.png'),
+    pygame.transform.scale(pygame.image.load('images/explosion1.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/explosion2.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/explosion3.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/explosion4.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/explosion5.png'), (32, 32))
 ]
 imgBulletRed = [
-    pygame.image.load('images/bulletRed1_outline.png'),
-    pygame.image.load('images/bulletRed2_outline.png'),
-    pygame.image.load('images/bulletRed3_outline.png'),
+    pygame.transform.scale(pygame.image.load('images/bulletRed1_outline.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/bulletRed2_outline.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/bulletRed3_outline.png'), (32, 32))
 ]
 imgBulletBlue = [
-    pygame.image.load('images/bulletBlue1_outline.png'),
-    pygame.image.load('images/bulletBlue2_outline.png'),
-    pygame.image.load('images/bulletBlue3_outline.png'),
+    pygame.transform.scale(pygame.image.load('images/bulletBlue1_outline.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/bulletBlue2_outline.png'), (32, 32)),
+    pygame.transform.scale(pygame.image.load('images/bulletBlue3_outline.png'), (32, 32))
 ]
 imgBonuses = [
-    pygame.image.load('images/crateWood.png'),
-    pygame.image.load('images/crateWood_side.png'),
+    pygame.transform.scale(pygame.image.load('images/crateWood.png'), (32, 32))
 ]
 
 DIRECTS = [[0, -1], [1, 0], [0, 1], [-1, 0]]
-
-MOVE_SPEED = [1, 10, 2, 1, 2, 3, 3, 2]
-BULLET_SPEED = [4, 5, 6, 5, 5, 5, 6, 7]
-BULLET_DAMAGE = [1, 1, 2, 3, 2, 2, 3, 4]
-SHOT_DELAY = [60, 50, 30, 40, 30, 25, 25, 30]
 
 
 def terminate():
@@ -67,7 +76,7 @@ def start_screen():
                   ""
                   "               BATTLE TANKS"]
 
-    fon = pygame.image.load('images\\tanks-world-of-tanks-game.jpg')
+    fon = pygame.image.load('images/background.png')
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 70)
     text_coord = 50
@@ -120,7 +129,7 @@ def dead_screen(player_name):
                   ""
                   "               GAME OVER"]
 
-    fon = pygame.image.load('images/black.jpg')
+    fon = pygame.image.load('images/background.png')
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 70)
     text_coord = 50
@@ -182,7 +191,7 @@ class UI:
             if obj.type == 'tank':
                 pygame.draw.rect(screen, obj.color, (5 + i * 70, 5, 22, 22))
 
-                text = fontUI.render(str(obj.rank), 1, 'black')
+                text = fontUI.render(str(obj.rank + 1), 1, 'black')
                 rect = text.get_rect(center=(5 + i * 70 + 11, 5 + 11))
                 screen.blit(text, rect)
 
@@ -193,7 +202,12 @@ class UI:
 
 
 class Tank:
-    def __init__(self, color, px, py, direct, keyList):
+    MOVE_SPEED = [1.5, 2, 3]
+    BULLET_SPEED = [4, 5, 6]
+    BULLET_DAMAGE = [1, 1, 2]
+    SHOT_DELAY = [50, 40, 30]
+
+    def __init__(self, color, px, py, direct, keyList, bulletList):
         objects.append(self)
         self.type = 'tank'
 
@@ -205,8 +219,9 @@ class Tank:
 
         self.moveSpeed = 2
         self.shotDelay = 60
-        self.bulletSpeed = 5
+        self.bulletSpeed = 10
         self.bulletDamage = 1
+        self.bulletList = bulletList
 
         self.keyLEFT = keyList[0]
         self.keyRIGHT = keyList[1]
@@ -215,6 +230,7 @@ class Tank:
         self.keySHOT = keyList[4]
 
         self.rank = 0
+
         if self.color == 'red':
             self.image = pygame.transform.rotate(imgTanksRed[self.rank], -self.direct * 90)
         elif self.color == 'blue':
@@ -230,10 +246,10 @@ class Tank:
         self.image = pygame.transform.scale(self.image, (self.image.get_width() - 5, self.image.get_height() - 5))
         self.rect = self.image.get_rect(center=self.rect.center)
 
-        self.moveSpeed = MOVE_SPEED[self.rank]
-        self.shotDelay = SHOT_DELAY[self.rank]
-        self.bulletSpeed = BULLET_SPEED[self.rank]
-        self.bulletDamage = BULLET_DAMAGE[self.rank]
+        self.moveSpeed = self.MOVE_SPEED[self.rank]
+        self.shotDelay = self.SHOT_DELAY[self.rank]
+        self.bulletSpeed = self.BULLET_SPEED[self.rank]
+        self.bulletDamage = self.BULLET_DAMAGE[self.rank]
 
         oldX, oldY = self.rect.topleft
         if keys[self.keyLEFT]:
@@ -256,7 +272,9 @@ class Tank:
         if keys[self.keySHOT] and self.shotTimer == 0:
             dx = DIRECTS[self.direct][0] * self.bulletSpeed
             dy = DIRECTS[self.direct][1] * self.bulletSpeed
-            Bullet(self, self.rect.centerx, self.rect.centery, dx, dy, self.bulletDamage)
+            Bullet(self, self.rect.centerx, self.rect.centery, dx, dy, self.bulletDamage, self.bulletList[self.rank],
+                   self.direct)
+            print(dx, dy)
             self.shotTimer = self.shotDelay
 
         if self.shotTimer > 0:
@@ -273,12 +291,15 @@ class Tank:
 
 
 class Bullet:
-    def __init__(self, parent, px, py, dx, dy, damage):
+    def __init__(self, parent, px, py, dx, dy, damage, image, direct):
         bullets.append(self)
         self.parent = parent
         self.px, self.py = px, py
         self.dx, self.dy = dx, dy
         self.damage = damage
+        self.image = image
+        self.direct = direct
+        self.image = pygame.transform.rotate(self.image, -self.direct * 90)
 
     def update(self):
         self.px += self.dx
@@ -296,7 +317,7 @@ class Bullet:
                         break
 
     def draw(self):
-        pygame.draw.circle(screen, 'yellow', (self.px, self.py), 2)
+        screen.blit(self.image, pygame.Rect(self.px, self.py, 2, 5))
 
 
 class Bang:
@@ -358,7 +379,7 @@ class Bonus:
         for obj in objects:
             if obj.type == 'tank' and self.rect.colliderect(obj.rect):
                 if self.bonusNum == 0:
-                    if obj.rank < len(imgTanksRed) - 1 or len(imgTanksBlue) - 1:
+                    if obj.rank < len(imgTanksRed) - 1:
                         obj.rank += 1
                         objects.remove(self)
                         break
@@ -374,8 +395,8 @@ class Bonus:
 
 bullets = []
 objects = []
-Tank('blue', 100, 275, 0, (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE))
-Tank('red', 650, 275, 0, (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_KP_ENTER))
+Tank('blue', 100, 275, 0, (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE), imgBulletBlue)
+Tank('red', 650, 275, 0, (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_KP_ENTER), imgBulletRed)
 ui = UI()
 
 for _ in range(50):
