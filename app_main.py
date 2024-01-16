@@ -55,9 +55,6 @@ imgBulletBlue = [
     pygame.transform.scale(pygame.image.load('images/bulletBlue2_outline.png'), (7, 15)),
     pygame.transform.scale(pygame.image.load('images/bulletBlue3_outline.png'), (11.5, 15))
 ]
-imgBonuses = [
-    pygame.transform.scale(pygame.image.load('images/crateWood.png'), (32, 32))
-]
 
 DIRECTS = [[0, -1], [1, 0], [0, 1], [-1, 0]]
 
@@ -324,7 +321,6 @@ class Bang:
     def __init__(self, px, py):
         objects.append(self)
         self.type = 'bang'
-
         self.px, self.py = px, py
         self.frame = 0
 
@@ -360,15 +356,33 @@ class Block:
 
 
 class Bonus:
+    imgBonusesRang = [
+        pygame.transform.scale(pygame.image.load('images/crateWood.png'), (32, 32)),
+        pygame.transform.scale(pygame.image.load('images/crateWood_side.png'), (32, 32)),
+        pygame.transform.scale(pygame.image.load('images/crateWood_2.png'), (32, 32)),
+        pygame.transform.scale(pygame.image.load('images/crateWood_side_2.png'), (32, 32))
+    ]
+    imgBonusesHP = [
+        pygame.transform.scale(pygame.image.load('images/crateMetal.png'), (32, 32)),
+        pygame.transform.scale(pygame.image.load('images/crateMetal_side.png'), (32, 32)),
+        pygame.transform.scale(pygame.image.load('images/crateMetal_2.png'), (32, 32)),
+        pygame.transform.scale(pygame.image.load('images/crateMetal_side_2.png'), (32, 32))
+    ]
+
     def __init__(self, px, py, bonusNum):
         objects.append(self)
         self.type = 'bonus'
-
-        self.image = imgBonuses[bonusNum]
+        if bonusNum == 0:
+            self.image = self.imgBonusesRang[0]
+            self.imgList = self.imgBonusesRang
+        else:
+            self.image = self.imgBonusesHP[0]
+            self.imgList = self.imgBonusesHP
         self.rect = self.image.get_rect(center=(px, py))
 
         self.timer = 600
         self.bonusNum = bonusNum
+        self.frame = 0
 
     def update(self):
         if self.timer > 0:
@@ -387,10 +401,11 @@ class Bonus:
                     obj.hp += 1
                     objects.remove(self)
                     break
+        self.frame += 0.05
 
     def draw(self):
-        if self.timer % 30 < 15:
-            screen.blit(self.image, self.rect)
+        image = self.imgList[int(self.frame) % 4]
+        screen.blit(image, self.rect)
 
 
 bullets = []
@@ -427,7 +442,7 @@ while play:
     if bonusTimer > 0:
         bonusTimer -= 1
     else:
-        Bonus(randint(50, WIDTH - 50), randint(50, HEIGHT - 50), randint(0, len(imgBonuses) - 1))
+        Bonus(randint(50, WIDTH - 50), randint(50, HEIGHT - 50), randint(0, 1))
         bonusTimer = randint(120, 240)
 
     for bullet in bullets:
