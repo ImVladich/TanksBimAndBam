@@ -189,6 +189,8 @@ def statistics_screen():
 
 
 def dead_screen(player_name):
+    with open('statistic.txt', 'w') as f:
+        f.write(f'{COUNT_DEAD} {COUNT_HIT} {COUNT_SHOT} {COUNT_TAKE_BONUS} {COUNT_BRAKE_BLOCK}')
     intro_text = [""
                   ""
                   ""
