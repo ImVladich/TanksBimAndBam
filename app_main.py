@@ -9,6 +9,16 @@ WIDTH, HEIGHT = 800, 600
 FPS = 60
 TILE = 32
 
+COUNT_DEAD = COUNT_HIT = COUNT_SHOT = COUNT_TAKE_BONUS = COUNT_BRAKE_BLOCK = 0
+
+with open('statistic.txt') as f:
+    f = f.read().split()
+    COUNT_DEAD += int(f[0])
+    COUNT_HIT += int(f[1])
+    COUNT_SHOT += int(f[2])
+    COUNT_TAKE_BONUS += int(f[3])
+    COUNT_BRAKE_BLOCK += int(f[4])
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
@@ -98,6 +108,7 @@ def start_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
                 if start_button.collidepoint(mouse_pos):
+                    # действия при нажатии на кнопку начать
                     return "start"
                 elif exit_button.collidepoint(mouse_pos):
                     terminate()
@@ -139,36 +150,30 @@ def dead_screen(player_name):
         screen.blit(string_rendered, intro_rect)
     font = pygame.font.Font(None, 36)
     text = font.render(f"{player_name} танк был повержен!", True, (255, 0, 0))
-    screen.blit(text, (260, 240))
+    screen.blit(text, (300, 280))
     pygame.display.flip()
 
-    restart_button = pygame.Rect(300, 300, 200, 50)  # прямоугольник для кнопки начать
     exit_button = pygame.Rect(300, 380, 200, 50)  # прямоугольник для кнопки выйти
     ui_instance = UI()
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+
                 terminate()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
-                if restart_button.collidepoint(mouse_pos):
-                    ui_instance.draw()
-                    return "start"
-                elif exit_button.collidepoint(mouse_pos):
+                if exit_button.collidepoint(mouse_pos):
                     terminate()
                     return "exit"
 
-        pygame.draw.rect(screen, (0, 0, 0), restart_button)  # рисуем кнопку начать
         pygame.draw.rect(screen, (0, 0, 0), exit_button)  # рисуем кнопку выйти
 
         font = pygame.font.Font(None, 30)
-        start_text = font.render("Сыграть еще раз", True, (255, 255, 255))
         exit_text = font.render("Выйти", True, (255, 255, 255))
-        screen.blit(start_text, (320, 320))  # позиция текста на кнопке начать
         screen.blit(exit_text, (320, 400))  # позиция текста на кнопке выйти
         pygame.display.flip()
         clock.tick(FPS)
@@ -185,31 +190,25 @@ class UI:
         i = 0
         for obj in objects:
             if obj.type == 'tank':
-                tank_width = 22
-                screen_width = 800
-
-                if i % 2 == 0:
-                    x_position = 5 + i * 70
-                else:
-                    x_position = screen_width - (5 + tank_width + (i - 1) * 70) - 20
-
-                pygame.draw.rect(screen, obj.color, (x_position, 5, 22, 22))
+                pygame.draw.rect(screen, obj.color, (5 + i * 70, 5, 22, 22))
 
                 text = fontUI.render(str(obj.rank + 1), 1, 'black')
-                rect = text.get_rect(center=(x_position + 11, 5 + 11))
+                rect = text.get_rect(center=(5 + i * 70 + 11, 5 + 11))
                 screen.blit(text, rect)
 
                 text = fontUI.render(str(obj.hp), 1, obj.color)
-                rect = text.get_rect(center=(x_position + 32, 5 + 11))
+                rect = text.get_rect(center=(5 + i * 70 + 32, 5 + 11))
                 screen.blit(text, rect)
                 i += 1
 
 
 class Tank:
+    global COUNT_HIT, COUNT_SHOT, COUNT_DEAD
+
     MOVE_SPEED = [1.5, 2, 3]
-    BULLET_SPEED = [4, 5, 4]
+    BULLET_SPEED = [4, 6, 4]
     BULLET_DAMAGE = [1, 1, 2]
-    SHOT_DELAY = [50, 40, 30]
+    SHOT_DELAY = [50, 40, 40]
 
     def __init__(self, color, px, py, direct, keyList, bulletList):
         objects.append(self)
@@ -242,6 +241,7 @@ class Tank:
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def update(self):
+        global COUNT_SHOT
         if self.color == 'red':
             self.image = pygame.transform.rotate(imgTanksRed[self.rank], -self.direct * 90)
         elif self.color == 'blue':
@@ -256,6 +256,7 @@ class Tank:
         self.bulletDamage = self.BULLET_DAMAGE[self.rank]
 
         oldX, oldY = self.rect.topleft
+
         if keys[self.keyLEFT]:
             self.rect.x -= self.moveSpeed
             self.direct = 3
@@ -274,9 +275,12 @@ class Tank:
                 self.rect.topleft = oldX, oldY
 
         if keys[self.keySHOT] and self.shotTimer == 0:
+            COUNT_SHOT += 1
+
             dx = DIRECTS[self.direct][0] * self.bulletSpeed
             dy = DIRECTS[self.direct][1] * self.bulletSpeed
-            Bullet(self, self.rect.centerx, self.rect.centery, dx, dy, self.bulletDamage, self.bulletList[self.rank],
+            Bullet(self, self.rect.centerx, self.rect.centery, dx, dy, self.bulletDamage,
+                   self.bulletList[self.rank],
                    self.direct)
             print(dx, dy)
             self.shotTimer = self.shotDelay
@@ -288,8 +292,12 @@ class Tank:
         screen.blit(self.image, self.rect)
 
     def damage(self, value):
+        global COUNT_HIT, COUNT_DEAD
+        COUNT_HIT += 1
+
         self.hp -= value
         if self.hp <= 0:
+            COUNT_DEAD += 1
             objects.remove(self)
             dead_screen(self.color)
 
@@ -343,6 +351,8 @@ class Bang:
 
 
 class Block:
+    global COUNT_BRAKE_BLOCK
+
     def __init__(self, px, py, size):
         objects.append(self)
         self.type = 'block'
@@ -357,12 +367,17 @@ class Block:
         screen.blit(imgBrick, self.rect)
 
     def damage(self, value):
+        global COUNT_BRAKE_BLOCK
+        COUNT_BRAKE_BLOCK += 1
+
         self.hp -= value
         if self.hp <= 0:
             objects.remove(self)
 
 
 class Bonus:
+    global COUNT_TAKE_BONUS
+
     imgBonusesRang = [
         pygame.transform.scale(pygame.image.load('images/crateWood.png'), (32, 32)),
         pygame.transform.scale(pygame.image.load('images/crateWood_side.png'), (32, 32)),
@@ -392,6 +407,7 @@ class Bonus:
         self.frame = 0
 
     def update(self):
+        global COUNT_TAKE_BONUS
         if self.timer > 0:
             self.timer -= 1
         else:
@@ -400,6 +416,8 @@ class Bonus:
         for obj in objects:
             if obj.type == 'tank' and self.rect.colliderect(obj.rect):
                 if self.bonusNum == 0:
+                    COUNT_TAKE_BONUS += 1
+
                     if obj.rank < len(imgTanksRed) - 1:
                         obj.rank += 1
                         objects.remove(self)
@@ -418,7 +436,8 @@ class Bonus:
 bullets = []
 objects = []
 Tank('blue', 100, 275, 0, (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE), imgBulletBlue)
-Tank('red', 650, 275, 0, (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_KP_ENTER), imgBulletRed)
+Tank('red', 650, 275, 0, (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_KP_ENTER),
+     imgBulletRed)
 ui = UI()
 
 for _ in range(50):
@@ -440,6 +459,8 @@ bonusTimer = 180
 start_screen()
 play = True
 while play:
+    with open('statistic.txt', 'w') as f:
+        f.write(f'{COUNT_DEAD} {COUNT_HIT} {COUNT_SHOT} {COUNT_TAKE_BONUS} {COUNT_BRAKE_BLOCK}')
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             play = False
@@ -458,9 +479,7 @@ while play:
         obj.update()
     ui.update()
 
-    fon_game = pygame.image.load('images/background.png')
-    screen.blit(fon_game, (0, 0))
-
+    screen.fill('black')
     for bullet in bullets:
         bullet.draw()
     for obj in objects:
