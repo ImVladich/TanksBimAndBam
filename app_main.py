@@ -98,7 +98,6 @@ def start_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
                 if start_button.collidepoint(mouse_pos):
-                    # действия при нажатии на кнопку начать
                     return "start"
                 elif exit_button.collidepoint(mouse_pos):
                     terminate()
@@ -140,7 +139,7 @@ def dead_screen(player_name):
         screen.blit(string_rendered, intro_rect)
     font = pygame.font.Font(None, 36)
     text = font.render(f"{player_name} танк был повержен!", True, (255, 0, 0))
-    screen.blit(text, (300, 280))
+    screen.blit(text, (260, 240))
     pygame.display.flip()
 
     restart_button = pygame.Rect(300, 300, 200, 50)  # прямоугольник для кнопки начать
@@ -186,14 +185,22 @@ class UI:
         i = 0
         for obj in objects:
             if obj.type == 'tank':
-                pygame.draw.rect(screen, obj.color, (5 + i * 70, 5, 22, 22))
+                tank_width = 22
+                screen_width = 800
+
+                if i % 2 == 0:
+                    x_position = 5 + i * 70
+                else:
+                    x_position = screen_width - (5 + tank_width + (i - 1) * 70) - 20
+
+                pygame.draw.rect(screen, obj.color, (x_position, 5, 22, 22))
 
                 text = fontUI.render(str(obj.rank + 1), 1, 'black')
-                rect = text.get_rect(center=(5 + i * 70 + 11, 5 + 11))
+                rect = text.get_rect(center=(x_position + 11, 5 + 11))
                 screen.blit(text, rect)
 
                 text = fontUI.render(str(obj.hp), 1, obj.color)
-                rect = text.get_rect(center=(5 + i * 70 + 32, 5 + 11))
+                rect = text.get_rect(center=(x_position + 32, 5 + 11))
                 screen.blit(text, rect)
                 i += 1
 
@@ -451,7 +458,9 @@ while play:
         obj.update()
     ui.update()
 
-    screen.fill('black')
+    fon_game = pygame.image.load('images/background.png')
+    screen.blit(fon_game, (0, 0))
+
     for bullet in bullets:
         bullet.draw()
     for obj in objects:
