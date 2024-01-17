@@ -466,6 +466,8 @@ with open('statistic.txt') as f:
 
         keys = pygame.key.get_pressed()
 
+
+
         if bonusTimer > 0:
             bonusTimer -= 1
         else:
