@@ -114,13 +114,28 @@ def start_screen():
                     terminate()
                     return "exit"
                 elif statistics_button.collidepoint(mouse_pos):
-                    statistics_result = statistics_screen()  # Call the statistics_screen function
-                    if statistics_result == "back":  # Check if the result is "back" to transition back to start screen
+                    statistics_result = statistics_screen()
+                    if statistics_result == "back":
                         return "statistics_back"
 
-        pygame.draw.rect(screen, (0, 0, 0), start_button)  # рисуем кнопку начать
-        pygame.draw.rect(screen, (0, 0, 0), statistics_button)  # рисуем кнопку статистики
-        pygame.draw.rect(screen, (0, 0, 0), exit_button)  # рисуем кнопку выйти
+        mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
+
+        if start_button.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, (100, 100, 100), start_button, border_radius=10)
+        else:
+            pygame.draw.rect(screen, (30, 30, 30), start_button, border_radius=10)
+        if statistics_button.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, (100, 100, 100), statistics_button, border_radius=10)
+        else:
+            pygame.draw.rect(screen, (30, 30, 30), statistics_button, border_radius=10)
+        if exit_button.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, (100, 100, 100), exit_button, border_radius=10)
+        else:
+            pygame.draw.rect(screen, (30, 30, 30), exit_button, border_radius=10)
+
+        pygame.draw.rect(screen, (0, 0, 0), start_button, border_radius=15)  # рисуем кнопку начать
+        pygame.draw.rect(screen, (0, 0, 0), statistics_button, border_radius=15)  # рисуем кнопку статистики
+        pygame.draw.rect(screen, (0, 0, 0), exit_button, border_radius=15)  # рисуем кнопку выйти
 
         font = pygame.font.Font(None, 30)
         start_text = font.render("Начать игру", True, (255, 255, 255))
