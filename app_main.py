@@ -96,7 +96,8 @@ def start_screen():
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
     start_button = pygame.Rect(300, 300, 200, 50)  # прямоугольник для кнопки начать
-    exit_button = pygame.Rect(300, 380, 200, 50)  # прямоугольник для кнопки выйти
+    statistics_button = pygame.Rect(300, 380, 200, 50)  # прямоугольник для кнопки начать
+    exit_button = pygame.Rect(300, 460, 200, 50)  # прямоугольник для кнопки выйти
 
     while True:
         for event in pygame.event.get():
@@ -108,23 +109,83 @@ def start_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
                 if start_button.collidepoint(mouse_pos):
-                    # действия при нажатии на кнопку начать
                     return "start"
                 elif exit_button.collidepoint(mouse_pos):
                     terminate()
                     return "exit"
+                elif statistics_button.collidepoint(mouse_pos):
+                    statistics_result = statistics_screen()  # Call the statistics_screen function
+                    if statistics_result == "back":  # Check if the result is "back" to transition back to start screen
+                        return "statistics_back"
 
         pygame.draw.rect(screen, (0, 0, 0), start_button)  # рисуем кнопку начать
+        pygame.draw.rect(screen, (0, 0, 0), statistics_button)  # рисуем кнопку статистики
         pygame.draw.rect(screen, (0, 0, 0), exit_button)  # рисуем кнопку выйти
 
         font = pygame.font.Font(None, 30)
         start_text = font.render("Начать игру", True, (255, 255, 255))
+        statistics_text = font.render("Статистика", True, (255, 255, 255))
         exit_text = font.render("Выйти", True, (255, 255, 255))
         screen.blit(start_text, (320, 320))  # позиция текста на кнопке начать
-        screen.blit(exit_text, (320, 400))  # позиция текста на кнопке выйти
+        screen.blit(statistics_text, (320, 400))  # позиция текста на кнопке начать
+        screen.blit(exit_text, (320, 480))  # позиция текста на кнопке выйти
 
         pygame.display.flip()
         clock.tick(FPS)
+
+
+def statistics_screen():
+    global COUNT_DEAD, COUNT_HIT, COUNT_SHOT, COUNT_TAKE_BONUS, COUNT_BRAKE_BLOCK
+    with open('statistic.txt') as f:
+        f = f.read().split()
+        COUNT_DEAD += int(f[0])
+        COUNT_HIT += int(f[1])
+        COUNT_SHOT += int(f[2])
+        COUNT_TAKE_BONUS += int(f[3])
+        COUNT_BRAKE_BLOCK += int(f[4])
+
+    # Create an exit button rectangle
+    back_button = pygame.Rect(50, 380, 200, 50)
+
+    # Choose a font and size for the text
+    font = pygame.font.Font(None, 36)
+    text_color = (255, 255, 255)
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                if back_button.collidepoint(mouse_pos):  # Check if the "Назад" button is clicked
+                    return "back"
+
+        screen.fill((0, 0, 0))  # Clear the screen
+
+        text_surface_dead = font.render(f"Кол-во игр: {COUNT_DEAD}", True, text_color)
+        screen.blit(text_surface_dead, (50, 50))
+
+        text_surface_hit = font.render(f"Кол-во попаданий: {COUNT_HIT}", True, text_color)
+        screen.blit(text_surface_hit, (50, 100))
+
+        text_surface_shot = font.render(f"Кол-во выстрелов: {COUNT_SHOT}", True, text_color)
+        screen.blit(text_surface_shot, (50, 150))
+
+        text_surface_take_bonus = font.render(f"Кол-во собранных бонусов: {COUNT_TAKE_BONUS}", True, text_color)
+        screen.blit(text_surface_take_bonus, (50, 200))
+
+        text_surface_brake_block = font.render(f"Кол-во сломанных блоков: {COUNT_BRAKE_BLOCK}", True, text_color)
+        screen.blit(text_surface_brake_block, (50, 250))
+        back_text = font.render("Назад", True, (255, 255, 255))
+        screen.blit(back_text, (70, 390))
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    pygame.quit()
 
 
 def dead_screen(player_name):
@@ -190,14 +251,22 @@ class UI:
         i = 0
         for obj in objects:
             if obj.type == 'tank':
-                pygame.draw.rect(screen, obj.color, (5 + i * 70, 5, 22, 22))
+                tank_width = 22
+                screen_width = 800
+
+                if i % 2 == 0:
+                    x_position = 5 + i * 70
+                else:
+                    x_position = screen_width - (5 + tank_width + (i - 1) * 70) - 20
+
+                pygame.draw.rect(screen, obj.color, (x_position, 5, 22, 22))
 
                 text = fontUI.render(str(obj.rank + 1), 1, 'black')
-                rect = text.get_rect(center=(5 + i * 70 + 11, 5 + 11))
+                rect = text.get_rect(center=(x_position + 11, 5 + 11))
                 screen.blit(text, rect)
 
                 text = fontUI.render(str(obj.hp), 1, obj.color)
-                rect = text.get_rect(center=(5 + i * 70 + 32, 5 + 11))
+                rect = text.get_rect(center=(x_position + 32, 5 + 11))
                 screen.blit(text, rect)
                 i += 1
 
@@ -479,7 +548,8 @@ while play:
         obj.update()
     ui.update()
 
-    screen.fill('black')
+    fon_game = pygame.image.load('images/background.png')
+    screen.blit(fon_game, (0, 0))
     for bullet in bullets:
         bullet.draw()
     for obj in objects:
