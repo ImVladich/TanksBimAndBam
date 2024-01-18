@@ -326,6 +326,8 @@ class Tank:
             self.image = pygame.transform.rotate(imgTanksBlue[self.rank], -self.direct * 90)
         self.rect = self.image.get_rect(center=self.rect.center)
 
+        self.sound = pygame.mixer.Sound('sounds/mixkit-instant-win-2021.wav')
+
     def update(self):
         global COUNT_SHOT
         if self.color == 'red':
@@ -368,7 +370,6 @@ class Tank:
             Bullet(self, self.rect.centerx, self.rect.centery, dx, dy, self.bulletDamage,
                    self.bulletList[self.rank],
                    self.direct)
-            print(dx, dy)
             self.shotTimer = self.shotDelay
 
         if self.shotTimer > 0:
@@ -383,6 +384,7 @@ class Tank:
 
         self.hp -= value
         if self.hp <= 0:
+            self.sound.play()
             COUNT_DEAD += 1
             objects.remove(self)
             dead_screen(self.color)
@@ -441,7 +443,6 @@ class Bang:
         image = imgBangs[int(self.frame)]
         rect = image.get_rect(center=(self.px, self.py))
         screen.blit(image, rect)
-
 
 
 class Block:
@@ -536,6 +537,7 @@ objects = []
 Tank('blue', 100, 275, 0, (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE), imgBulletBlue)
 Tank('red', 650, 275, 0, (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_KP_ENTER),
      imgBulletRed)
+
 ui = UI()
 
 for _ in range(50):
