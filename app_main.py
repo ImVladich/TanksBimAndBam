@@ -98,7 +98,8 @@ def start_screen():
     start_button = pygame.Rect(300, 300, 200, 50)  # прямоугольник для кнопки начать
     statistics_button = pygame.Rect(300, 380, 200, 50)  # прямоугольник для кнопки начать
     exit_button = pygame.Rect(300, 460, 200, 50)  # прямоугольник для кнопки выйти
-
+    start_sound = pygame.mixer.Sound('sounds/start_sc_music.mp3')
+    start_sound.play()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -109,12 +110,14 @@ def start_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
                 if start_button.collidepoint(mouse_pos):
+                    start_sound.stop()
                     return "start"
                 elif exit_button.collidepoint(mouse_pos):
                     terminate()
                     return "exit"
                 elif statistics_button.collidepoint(mouse_pos):
                     statistics_result = statistics_screen()
+                    start_sound.stop()
                     if statistics_result == "back":
                         return "statistics_back"
 
@@ -433,7 +436,6 @@ class Bang:
         self.px, self.py = px, py
         self.frame = 0
         self.sound = pygame.mixer.Sound('sounds/oglushitelnyiy-blizkiy-vzryiv.mp3')
-        self.clock = pygame.time.Clock()
 
     def update(self):
         self.sound.play()
