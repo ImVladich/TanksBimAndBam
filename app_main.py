@@ -362,6 +362,9 @@ class Tank:
             if obj != self and obj.type == 'block' and self.rect.colliderect(obj.rect):
                 self.rect.topleft = oldX, oldY
 
+        if self.rect.x > 800 - 32 or self.rect.x < 0 or self.rect.y > 600 - 32 or self.rect.y < 0:
+            self.rect.topleft = oldX, oldY
+
         if keys[self.keySHOT] and self.shotTimer == 0:
             COUNT_SHOT += 1
 
@@ -407,7 +410,7 @@ class Bullet:
         self.px += self.dx
         self.py += self.dy
         if not self.sound_played:
-            self.sound.play()  # Play the bullet sound only if it hasn't been played yet
+            self.sound.play()
             self.sound_played = True
         if self.px < 0 or self.px > WIDTH or self.py < 0 or self.py > HEIGHT:
             bullets.remove(self)
@@ -430,7 +433,7 @@ class Bang:
         self.type = 'bang'
         self.px, self.py = px, py
         self.frame = 0
-        self.sound = pygame.mixer.Sound('sounds/oglushitelnyiy-blizkiy-vzryiv.mp3')  # Пример пути к звуковому файлу
+        self.sound = pygame.mixer.Sound('sounds/oglushitelnyiy-blizkiy-vzryiv.mp3')
         self.clock = pygame.time.Clock()
 
     def update(self):
