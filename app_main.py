@@ -398,11 +398,15 @@ class Bullet:
         self.image = image
         self.direct = direct
         self.image = pygame.transform.rotate(self.image, -self.direct * 90)
+        self.sound = pygame.mixer.Sound('sounds/tankovyiy-vyistrel.mp3')
+        self.sound_played = False
 
     def update(self):
         self.px += self.dx
         self.py += self.dy
-
+        if not self.sound_played:
+            self.sound.play()  # Play the bullet sound only if it hasn't been played yet
+            self.sound_played = True
         if self.px < 0 or self.px > WIDTH or self.py < 0 or self.py > HEIGHT:
             bullets.remove(self)
         else:
@@ -424,8 +428,11 @@ class Bang:
         self.type = 'bang'
         self.px, self.py = px, py
         self.frame = 0
+        self.sound = pygame.mixer.Sound('sounds/oglushitelnyiy-blizkiy-vzryiv.mp3')  # Пример пути к звуковому файлу
+        self.clock = pygame.time.Clock()
 
     def update(self):
+        self.sound.play()
         self.frame += 0.2
         if self.frame >= 3:
             objects.remove(self)
@@ -434,6 +441,7 @@ class Bang:
         image = imgBangs[int(self.frame)]
         rect = image.get_rect(center=(self.px, self.py))
         screen.blit(image, rect)
+
 
 
 class Block:
@@ -492,6 +500,8 @@ class Bonus:
         self.bonusNum = bonusNum
         self.frame = 0
 
+        self.bonus_sound = pygame.mixer.Sound('sounds/bonus_snd.wav')
+
     def update(self):
         global COUNT_TAKE_BONUS
         if self.timer > 0:
@@ -506,10 +516,12 @@ class Bonus:
 
                     if obj.rank < len(imgTanksRed) - 1:
                         obj.rank += 1
+                        self.bonus_sound.play()
                         objects.remove(self)
                         break
                 elif self.bonusNum == 1:
                     obj.hp += 1
+                    self.bonus_sound.play()
                     objects.remove(self)
                     break
         self.frame += 0.05
