@@ -232,7 +232,6 @@ def dead_screen(player_name):
     pygame.display.flip()
 
     exit_button = pygame.Rect(300, 380, 200, 50)  # прямоугольник для кнопки выйти
-    ui_instance = UI()
 
     while True:
         for event in pygame.event.get():
@@ -343,7 +342,7 @@ class Tank:
         self.bulletSpeed = self.BULLET_SPEED[self.rank]
         self.bulletDamage = self.BULLET_DAMAGE[self.rank]
 
-        oldX, oldY = self.rect.topleft
+        old_x, old_y = self.rect.topleft
 
         if keys[self.keyLEFT]:
             self.rect.x -= self.moveSpeed
@@ -360,10 +359,10 @@ class Tank:
 
         for obj in objects:
             if obj != self and obj.type == 'block' and self.rect.colliderect(obj.rect):
-                self.rect.topleft = oldX, oldY
+                self.rect.topleft = old_x, old_y
 
         if self.rect.x > 800 - 32 or self.rect.x < 0 or self.rect.y > 600 - 32 or self.rect.y < 0:
-            self.rect.topleft = oldX, oldY
+            self.rect.topleft = old_x, old_y
 
         if keys[self.keySHOT] and self.shotTimer == 0:
             COUNT_SHOT += 1
