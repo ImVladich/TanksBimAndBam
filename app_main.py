@@ -81,7 +81,7 @@ def start_screen():
                   ""
                   ""
                   ""
-                  "               BATTLE TANKS"]
+                  "               BIM-BAM TANKS"]
 
     fon = pygame.image.load('images/start_background.png')
     screen.blit(fon, (0, 0))
@@ -116,12 +116,10 @@ def start_screen():
                     terminate()
                     return "exit"
                 elif statistics_button.collidepoint(mouse_pos):
-                    statistics_result = statistics_screen()
                     start_sound.stop()
-                    if statistics_result == "back":
-                        return "statistics_back"
+                    statistics_screen()
 
-        mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
+        mouse_pos = pygame.mouse.get_pos()
 
         if start_button.collidepoint(mouse_pos):
             pygame.draw.rect(screen, (100, 100, 100), start_button, border_radius=10)
@@ -180,7 +178,7 @@ def statistics_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
                 if back_button.collidepoint(mouse_pos):  # Check if the "Назад" button is clicked
-                    return "back"
+                    start_screen()
 
         screen.fill((0, 0, 0))  # Clear the screen
 
@@ -231,7 +229,7 @@ def dead_screen(player_name):
         screen.blit(string_rendered, intro_rect)
     font = pygame.font.Font(None, 36)
     text = font.render(f"{player_name} танк был повержен!", True, (255, 0, 0))
-    screen.blit(text, (300, 280))
+    screen.blit(text, (260, 250))
     pygame.display.flip()
 
     exit_button = pygame.Rect(300, 380, 200, 50)  # прямоугольник для кнопки выйти
